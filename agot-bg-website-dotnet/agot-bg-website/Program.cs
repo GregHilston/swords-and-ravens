@@ -611,7 +611,7 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedAsync(scope.ServiceProvider);
     await PermissionSeeder.SeedAsync(scope.ServiceProvider);
-    await RoomSeeder.SeedAsync(scope.ServiceProvider, app.Environment);
+    await RoomSeeder.SeedAsync(scope.ServiceProvider);
 
     // Nobody can still be connected to this single website process when it starts, so remove both
     // legacy room-wide presence blobs and per-connection records left by the previous process.

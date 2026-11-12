@@ -136,12 +136,7 @@ public static class ContentSecurityPolicyMiddlewareExtensions
 
     private static string BuildPolicy(IConfiguration config, string nonce)
     {
-        // Mirrors GameClient.ts's own "localhost -> ws://localhost:5000, else ->
-        // wss://play.<host>" branch (agot-bg-game-server/src/client/GameClient.ts), so this stays
-        // correct for the configured production public site without hardcoding its hostname.
-        var publicSiteHost = new Uri(config["PublicSiteUrl"] ?? "http://localhost:8000").Host;
-        var gameWebSocketOrigin =
-            publicSiteHost == "localhost" ? "ws://localhost:5000" : $"wss://play.{publicSiteHost}";
+        var gameWebSocketOrigin = GameServerUrl.FromConfig(config);
 
         string[] directives =
         [
@@ -153,7 +148,7 @@ public static class ContentSecurityPolicyMiddlewareExtensions
             "style-src-attr 'unsafe-inline'",
             "font-src 'self'",
             $"img-src 'self' data: {GameClientCdnOrigin} https://cdn.jsdelivr.net",
-            $"media-src {GameClientCdnOrigin}",
+            $"media-src 'self' {GameClientCdnOrigin}",
             $"connect-src 'self' {gameWebSocketOrigin}",
             "frame-src https://challenges.cloudflare.com",
             "form-action 'self' https://accounts.google.com https://discord.com https://www.facebook.com",

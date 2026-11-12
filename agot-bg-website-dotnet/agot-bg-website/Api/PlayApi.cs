@@ -1,6 +1,7 @@
 using System.Text.Json;
 using agot_bg_website.Data;
 using agot_bg_website.Domain;
+using agot_bg_website.Infrastructure;
 using agot_bg_website.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -42,7 +43,8 @@ public static class PlayApi
                 ApplicationDbContext db,
                 UserManager<ApplicationUser> userManager,
                 SignInManager<ApplicationUser> signInManager,
-                IAuthorizationService authorizationService
+                IAuthorizationService authorizationService,
+                IConfiguration config
             ) =>
             {
                 var game = await db.Games.AsNoTracking().FirstOrDefaultAsync(g => g.Id == gameId);
@@ -133,6 +135,7 @@ public static class PlayApi
                     requestUserId = requestUser.Id,
                     gameId,
                     authToken = effectiveUser.GameToken,
+                    gameServerUrl = GameServerUrl.FromConfig(config),
                 };
 
                 // System.Text.Json's default encoder already HTML/script-safe-escapes '<', '>', '&'
