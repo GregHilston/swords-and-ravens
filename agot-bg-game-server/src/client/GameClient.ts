@@ -19,6 +19,7 @@ export interface AuthData {
   requestUserId: string;
   gameId: string;
   authToken: string;
+  gameServerUrl?: string;
 }
 
 export enum ConnectionState {
@@ -277,9 +278,10 @@ export default class GameClient {
 
   start(): void {
     const websocketHost =
-      location.hostname == "localhost"
+      this.authData.gameServerUrl ||
+      (location.hostname == "localhost"
         ? "ws://localhost:5000"
-        : "wss://play." + location.hostname;
+        : "wss://play." + location.hostname);
 
     console.log(`Connecting to ${websocketHost}`);
 
